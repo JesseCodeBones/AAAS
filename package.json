@@ -1,0 +1,19 @@
+{
+  "name": "AAAS",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "compile": "tsc -w",
+    "run-server": "nodemon ./runtime/bin/www"
+  },
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "cookie-parser": "^1.4.5",
+    "debug": "^2.6.9",
+    "ejs": "^2.7.4",
+    "express": "^4.17.1",
+    "http-errors": "^1.7.3",
+    "log4js": "latest",
+    "morgan": "^1.10.0"
+  }
+}
