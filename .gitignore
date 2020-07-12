@@ -1,3 +1,5 @@
 /node_modules
 /runtime
 /.idea
+/test/runtime_test
+/log

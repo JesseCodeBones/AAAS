@@ -8,7 +8,7 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "declaration": false,
-    "outDir": "./runtime/",
+    "outDir": "./runtime_test/",
     "sourceMap": true,
     "lib": [
       "es7",
