@@ -12,10 +12,8 @@ export class IndexRouter {
 
         /* GET home page. */
         index_router.get('/', function(req, res, next) {
-            monitor.startAppium().then(value => {
-                res.render('index', { serverStarted: value });
-            })
-
+            monitor.checkStatus();
+            res.render('index', { serverStarted: true });
         });
 
         return index_router;

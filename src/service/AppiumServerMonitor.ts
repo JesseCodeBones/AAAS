@@ -2,9 +2,17 @@ import {AppiumServerConst} from "./AppiumServerConst";
 
 // @ts-ignore
 const { exec } = require('child_process');
+
+
+
 export class AppiumServerMonitor {
+    private childProcess: any;
+    private monitorID:number;
 
-
+    constructor(){
+        this.childProcess=null;
+        this.monitorID = null;
+    }
 
 
     /**
@@ -19,7 +27,7 @@ export class AppiumServerMonitor {
             let port = AppiumServerConst.PORT;
             // @ts-ignore
             let command: string = `node ${__dirname}/../../appium/appium --log-level error:debug  -g ${__dirname}/../../log/appium.log --address 127.0.0.1 --port ${port} --bootstrap-port 28267`;
-            exec(command, (err, stdout, stderr) => {
+            this.childProcess = exec(command, (err, stdout, stderr) => {
 
                 console.log(`stdout: ${stdout}`);
                 console.log(`stderr: ${stderr}`);
@@ -33,28 +41,21 @@ export class AppiumServerMonitor {
 
     /**
      *
-     * @returns{Promise<boolean>}
-     * when return true value, the server is started
-     *
-     * when return false value, the server is not run
+     * check the status of appium server, if Appium server is down
+     * restart the server
      * */
-    checkStatus():Promise<boolean>{
+    checkStatus(){
 
-        return new Promise<boolean> (resolve => {
-            // @ts-ignore
-            const server = require('http').createServer().listen(AppiumServerConst.PORT);
-            // @ts-ignore
-            const server = require('http')
-                .createServer()
-                .listen(AppiumServerConst.PORT, () => {
-                    server.close()
-                    resolve(false);
-                }).on('error', () => {
-                    resolve(true);
-                })
+        if (this.monitorID == null) {
+            let checker = ()=>{
+                if (this.childProcess == null || this.childProcess.exitCode != null || this.childProcess.pid == null || this.childProcess.killed) {
+                    this.startAppium();
+                }
 
-        });
+            };
 
+            this.monitorID = setInterval(checker, 1500);
+        }
     }
 
 }
