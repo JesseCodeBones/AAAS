@@ -13,8 +13,9 @@ var logger = require('morgan');
 var indexRouter = IndexRouter.getRouter();
 //@ts-ignore
 const { exec } = require('child_process');
+import {AppiumServerMonitor} from "./service/AppiumServerMonitor";
 
-
+let monitor = new AppiumServerMonitor();
 
 export class app{
     static generateApplication():any{
@@ -32,7 +33,7 @@ export class app{
         app.use(express.static(path.join(__dirname, "..", 'public')));
 
         app.use('/', indexRouter);
-
+        monitor.checkStatus();
         // catch 404 and forward to error handler
         app.use(function(req, res, next) {
         next(createError(404));
