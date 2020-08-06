@@ -1,6 +1,6 @@
 // @ts-ignore
 var assert = require('assert');
-import {AppiumServerMonitor} from "../../runtime/service/AppiumServerMonitor";
+//import {AppiumServerMonitor} from "../../runtime/service/AppiumServerMonitor";
 // @ts-ignore
 describe('AppiumServerMonitor test', function () {
     // @ts-ignore

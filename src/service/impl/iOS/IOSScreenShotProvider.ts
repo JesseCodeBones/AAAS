@@ -1,7 +1,7 @@
 import {ScreenShotProvider} from "../../ScreenShotProvider";
 
 export class IOSScreenShotProvider implements ScreenShotProvider{
-    takeScreenShot(): ImageData {
+    async takeScreenShot(deviceId:String): Promise<string> {
         //TODO implement this with iTools
         return undefined;
     }

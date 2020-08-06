@@ -1,5 +1,7 @@
 
 // @ts-ignore
+import {ScreenShotProviderProvider} from "../service/provider/ScreenShotProviderProvider";
+// @ts-ignore
 var express = require('express');
 
 export class IndexRouter {
@@ -9,6 +11,13 @@ export class IndexRouter {
         /* GET home page. */
         index_router.get('/', function(req, res, next) {
             res.render('index', { serverStarted: true });
+        });
+        //R28M31LFZLP
+        index_router.get('/deviceScreen', function(req, res, next) {
+
+            ScreenShotProviderProvider.ANDROID.getProvider().takeScreenShot("R28M31LFZLP").then(data=>{
+                res.end(data);
+            });
         });
 
         return index_router;
