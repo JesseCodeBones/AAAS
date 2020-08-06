@@ -20,6 +20,12 @@ export class IndexRouter {
             });
         });
 
+        /* GET vnc page. */
+        index_router.get('/vnc', function(req, res, next) {
+            res.render('vnc', { deviceId: "R28M31LFZLP" });
+        });
+
+
         return index_router;
     }
 }

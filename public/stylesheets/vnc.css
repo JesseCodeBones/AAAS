@@ -1,0 +1,46 @@
+.main{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.vnc{
+    flex: 1;
+    background: #00B7FF;
+    text-align: center;
+}
+
+.controller{
+    flex: 1;
+    background: aquamarine;
+}
+
+.vnc-image{
+    display: inline-block;
+    background: transparent;
+    width: 70%;
+    min-width: 300px;
+    height: 90%;
+    margin-top: 5%;
+    min-height: 600px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.dump {
+    height: 45%;
+    width: 100%;
+    background: black;
+}
+
+.executor {
+    height: 10%;
+    background: red;
+}
+
+.script {
+    height: 45%;
+    background: yellow;
+}

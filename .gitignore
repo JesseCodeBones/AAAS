@@ -8,3 +8,5 @@ lib/android_vnc/.idea/encodings.xml
 lib/android_vnc/.idea/misc.xml
 lib/android_vnc/.idea/modules.xml
 lib/android_vnc/.idea/vcs.xml
+public/dist
+screen.png
