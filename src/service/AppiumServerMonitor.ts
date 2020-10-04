@@ -36,9 +36,6 @@ export class AppiumServerMonitor {
         });
 
     }
-
-
-
     /**
      *
      * check the status of appium server, if Appium server is down
@@ -56,6 +53,11 @@ export class AppiumServerMonitor {
 
             this.monitorID = setInterval(checker, 1500);
         }
+    }
+
+    private static instance:AppiumServerMonitor = new AppiumServerMonitor();
+    public static getInstance():AppiumServerMonitor{
+        return AppiumServerMonitor.instance;
     }
 
 }
