@@ -32,7 +32,10 @@
 .dump {
     height: 45%;
     width: 100%;
-    background: black;
+    position: relative;
+    background: white;
+    overflow: scroll;
+    font-family: sans-serif;
 }
 
 .executor {

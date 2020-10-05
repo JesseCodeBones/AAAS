@@ -27,7 +27,7 @@ export class AppiumServiceHelper {
         if (this.sessionCache.get(deviceName)) {
             let cacheSession = this.sessionCache.get(deviceName);
             try {
-                let status = await cacheSession.status();
+                let status = await cacheSession.getPageSource();
             } catch (error) {
                 //the session is dead, create new session
                 return await this.createAndSave(deviceName, platform, platformVersion);
