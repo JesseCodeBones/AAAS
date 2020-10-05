@@ -13,6 +13,7 @@
 
 .controller{
     flex: 1;
+    max-width: 50%;
     background: aquamarine;
 }
 
@@ -34,8 +35,12 @@
     width: 100%;
     position: relative;
     background: white;
-    overflow: scroll;
+    overflow: auto;
     font-family: sans-serif;
+}
+
+.dump li {
+    display: inline;
 }
 
 .executor {
@@ -73,4 +78,30 @@
     width: 3vw;
     right: 1vw;
     cursor: pointer;
+}
+
+.properties-pop-window {
+    position: fixed;
+    top: 0;
+    background: wheat;
+    text-align: right;
+    font-family: sans-serif;
+    border: 1px solid black;
+}
+
+.properties-pop-window>.close {
+    position: relative;
+    right: 0;
+    display: inline-block;
+    cursor: pointer;
+    font-family: sans-serif;
+}
+
+.properties-pop-window>.values {
+    text-align: left;
+    border-top: 1px solid black;
+    margin-top: 0.5vw;
+    padding-top: 0.5vw;
+    padding-right: 7vw;
+    padding-left: 1vw;
 }
