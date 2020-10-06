@@ -9,6 +9,7 @@
     flex: 1;
     background: #00B7FF;
     text-align: center;
+    position: relative;
 }
 
 .controller{
@@ -28,6 +29,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    position: relative;
 }
 
 .dump {

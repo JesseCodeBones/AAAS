@@ -9,6 +9,8 @@ class Vnc {
     private dumpRoot: any;
     public dumpXml: any;
 
+    private rootBounds:Bounds;
+
     public elementCache: Map<string, DumpElement> = new Map();
 
     constructor() {
@@ -60,6 +62,7 @@ class Vnc {
         this.clearDump();
         let uuid: string = UUID.getInstance().genUUID();
         this.elementCache.set(uuid, root);
+        this.rootBounds = root.bounds;
         //@ts-ignore
         this.dumpRoot.html($(`<ul>
                                 <li style="cursor:pointer;">
@@ -69,8 +72,57 @@ class Vnc {
                               </ul>`));
     }
 
+
+    public highlight(element:DumpElement) {
+        //@ts-ignore
+        $(".vnc-image>.highlight").remove();
+
+        let rootScale = (this.rootBounds.height - this.rootBounds.y)/(this.rootBounds.width-this.rootBounds.x);
+        //@ts-ignore
+        let vncHeight = $(".vnc-image").height();
+        //@ts-ignore
+        let vncWidth = $(".vnc-image").width();
+        //@ts-ignore
+        let vncScale = vncHeight/vncWidth;
+
+        let deviceHeight:number = -1, deviceWidth:number=-1, offsetHeight = -1, offsetWidth = -1;
+
+        if(rootScale > vncScale) {
+            deviceHeight = vncHeight;
+            deviceWidth = vncWidth / rootScale;
+            offsetHeight = 0;
+            offsetWidth = (1/2 - 1/(2*rootScale))*vncWidth;
+        } else {
+            deviceHeight = vncWidth * rootScale;
+            deviceWidth = vncWidth;
+            offsetHeight = (vncHeight - deviceHeight)/2;
+            offsetWidth = 0;
+        }
+
+        let heightScale = (this.rootBounds.height - this.rootBounds.y)/deviceHeight, widthScale = (this.rootBounds.width-this.rootBounds.x)/deviceWidth;
+
+        let elementHeight = (element.bounds.height)/heightScale;
+        let elementWidth = (element.bounds.width)/widthScale;
+        let elementOffsetX = offsetHeight + element.bounds.x/widthScale;
+        let elementOffwetY = offsetWidth + element.bounds.y/heightScale;
+        //@ts-ignore
+        $(".vnc-image").append($(`
+            <div class = "highlight" style="border:2px solid red;height:${elementHeight-4}px; width:${elementWidth-4}px; left:${elementOffwetY}px; top:${elementOffsetX}px; position:absolute">
+            </div>
+        `));
+    }
+
 }
 let vnc = new Vnc();
+
+//@ts-ignore
+$(document).on('mouseover', ".dump li", function(event){
+    //@ts-ignore
+    let uuid = $(event.target).attr('uuid');
+    let element = vnc.elementCache.get(uuid);
+    vnc.highlight(element);
+});
+
 //@ts-ignore
 $(document).on('click', ".properties-pop-window>.close", function (event) {
     //@ts-ignore
@@ -89,10 +141,10 @@ $(document).on('click', ".expand-child", function (event) {
         let content = '';
         for(let child of childrenNodes) {
             let bounds = child.getAttribute("bounds").match(/\d+/g);
-            let elementBounds:Bounds = new Bounds(Number(bounds[0]),
-                                                    Number(bounds[1]),
-                                                    Number(bounds[3]),
-                                                    Number(bounds[2]));
+            let elementBounds:Bounds = new Bounds(Number(bounds[1]),
+                                                    Number(bounds[0]),
+                                                    Number(bounds[2] - Number(bounds[0])),
+                                                    Number(bounds[3] - Number(bounds[1])));
             let element:DumpElement = new DumpElement(
                 child.className,
                 elementBounds,
