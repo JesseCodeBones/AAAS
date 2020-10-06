@@ -77,7 +77,7 @@ class Vnc {
         //@ts-ignore
         $(".vnc-image>.highlight").remove();
 
-        let rootScale = (this.rootBounds.height - this.rootBounds.y)/(this.rootBounds.width-this.rootBounds.x);
+        let rootScale = Number(this.rootBounds.height)/Number(this.rootBounds.width);
         //@ts-ignore
         let vncHeight = $(".vnc-image").height();
         //@ts-ignore
@@ -89,9 +89,9 @@ class Vnc {
 
         if(rootScale > vncScale) {
             deviceHeight = vncHeight;
-            deviceWidth = vncWidth / rootScale;
+            deviceWidth = Number(this.rootBounds.width) * (deviceHeight / Number(this.rootBounds.height));
             offsetHeight = 0;
-            offsetWidth = (1/2 - 1/(2*rootScale))*vncWidth;
+            offsetWidth = vncWidth/2 - deviceWidth/2;
         } else {
             deviceHeight = vncWidth * rootScale;
             deviceWidth = vncWidth;
@@ -99,7 +99,7 @@ class Vnc {
             offsetWidth = 0;
         }
 
-        let heightScale = (this.rootBounds.height - this.rootBounds.y)/deviceHeight, widthScale = (this.rootBounds.width-this.rootBounds.x)/deviceWidth;
+        let heightScale = Number(this.rootBounds.height)/deviceHeight, widthScale = Number(this.rootBounds.width)/deviceWidth;
 
         let elementHeight = (element.bounds.height)/heightScale;
         let elementWidth = (element.bounds.width)/widthScale;
@@ -131,6 +131,9 @@ $(document).on('click', ".properties-pop-window>.close", function (event) {
 
 //@ts-ignore
 $(document).on('click', ".expand-child", function (event) {
+    //@ts-ignore
+    $(event.target).parent().children("ul").remove()
+
     //@ts-ignore
     let uuid = $(event.target).attr('uuid');
     let element = vnc.elementCache.get(uuid);
