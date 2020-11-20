@@ -18,7 +18,7 @@ export class IndexRouter {
         }
 
         index_router.get("/appium/pagesource", async function(req, res) {
-            let session:any = await AppiumServiceHelper.getInstance().getSession("9e6c2fcb", "Android", "8.0");
+            let session:any = await AppiumServiceHelper.getInstance().getSession("9A261FFBA0090J", "Android", "11.0");
             let pageSource:any = await session.getPageSource();
             res.end(pageSource);
         });
@@ -26,7 +26,7 @@ export class IndexRouter {
         index_router.get('/vnc', async function (req, res) {
             //@ts-ignore
             
-            res.render('vnc', { deviceId: "9e6c2fcb" });
+            res.render('vnc', { deviceId: "9A261FFBA0090J" });
         });
 
         /* GET home page. */
@@ -36,7 +36,7 @@ export class IndexRouter {
         //R28M31LFZLP
         index_router.get('/deviceScreen', function (req, res, next) {
 
-            ScreenShotProviderProvider.ANDROID.getProvider().takeScreenShot("9e6c2fcb").then(data => {
+            ScreenShotProviderProvider.ANDROID.getProvider().takeScreenShot("9A261FFBA0090J").then(data => {
                 res.end(data);
             });
         });

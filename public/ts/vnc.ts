@@ -1,5 +1,7 @@
 import { Bounds } from "./service/Bean/Bounds.js";
 import { DumpElement } from "./service/Bean/DumpElement.js";
+import { Point } from "./service/Bean/Point.js";
+import { ScreenUtil } from "./service/util/ScreenUtil.js";
 import { UUID } from "./service/util/UUID.js";
 
 class Vnc {
@@ -9,7 +11,7 @@ class Vnc {
     private dumpRoot: any;
     public dumpXml: any;
 
-    private rootBounds:Bounds;
+    private rootBounds: Bounds;
 
     public elementCache: Map<string, DumpElement> = new Map();
 
@@ -52,7 +54,7 @@ class Vnc {
         console.log(element.attributes.length);
     }
 
-    public setChildNode(element: DumpElement):string{
+    public setChildNode(element: DumpElement): string {
         let uuid: string = UUID.getInstance().genUUID();
         this.elementCache.set(uuid, element);
         return uuid;
@@ -73,50 +75,62 @@ class Vnc {
     }
 
 
-    public highlight(element:DumpElement) {
+    public highlight(element: DumpElement) {
         //@ts-ignore
         $(".vnc-image>.highlight").remove();
 
-        let rootScale = Number(this.rootBounds.height)/Number(this.rootBounds.width);
+        let rootScale = Number(this.rootBounds.height) / Number(this.rootBounds.width);
         //@ts-ignore
         let vncHeight = $(".vnc-image").height();
         //@ts-ignore
         let vncWidth = $(".vnc-image").width();
         //@ts-ignore
-        let vncScale = vncHeight/vncWidth;
+        let vncScale = vncHeight / vncWidth;
 
-        let deviceHeight:number = -1, deviceWidth:number=-1, offsetHeight = -1, offsetWidth = -1;
+        let deviceHeight: number = -1, deviceWidth: number = -1, offsetHeight = -1, offsetWidth = -1;
 
-        if(rootScale > vncScale) {
+        if (rootScale > vncScale) {
             deviceHeight = vncHeight;
             deviceWidth = Number(this.rootBounds.width) * (deviceHeight / Number(this.rootBounds.height));
             offsetHeight = 0;
-            offsetWidth = vncWidth/2 - deviceWidth/2;
+            offsetWidth = vncWidth / 2 - deviceWidth / 2;
         } else {
             deviceHeight = vncWidth * rootScale;
             deviceWidth = vncWidth;
-            offsetHeight = (vncHeight - deviceHeight)/2;
+            offsetHeight = (vncHeight - deviceHeight) / 2;
             offsetWidth = 0;
         }
 
-        let heightScale = Number(this.rootBounds.height)/deviceHeight, widthScale = Number(this.rootBounds.width)/deviceWidth;
+        let heightScale = Number(this.rootBounds.height) / deviceHeight, widthScale = Number(this.rootBounds.width) / deviceWidth;
 
-        let elementHeight = (element.bounds.height)/heightScale;
-        let elementWidth = (element.bounds.width)/widthScale;
-        let elementOffsetX = offsetHeight + element.bounds.x/widthScale;
-        let elementOffwetY = offsetWidth + element.bounds.y/heightScale;
+        let elementHeight = (element.bounds.height) / heightScale;
+        let elementWidth = (element.bounds.width) / widthScale;
+        let elementOffsetX = offsetHeight + element.bounds.x / widthScale;
+        let elementOffwetY = offsetWidth + element.bounds.y / heightScale;
         //@ts-ignore
         $(".vnc-image").append($(`
-            <div class = "highlight" style="border:2px solid red;height:${elementHeight-4}px; width:${elementWidth-4}px; left:${elementOffwetY}px; top:${elementOffsetX}px; position:absolute">
+            <div class = "highlight" style="border:2px solid red;height:${elementHeight - 4}px; width:${elementWidth - 4}px; left:${elementOffwetY}px; top:${elementOffsetX}px; position:absolute">
             </div>
         `));
+    }
+
+    clickOnVnc(clientPoint:Point):Point{
+        //@ts-ignore
+        let vncHeight = $(".vnc-image").height();
+        //@ts-ignore
+        let vncWidth = $(".vnc-image").width();
+
+        return ScreenUtil.pagePointsToDevicePoint(clientPoint,
+            new Point(vncWidth, vncHeight),
+            this.rootBounds
+        );
     }
 
 }
 let vnc = new Vnc();
 
 //@ts-ignore
-$(document).on('mouseover', ".dump li", function(event){
+$(document).on('mouseover', ".dump li", function (event) {
     //@ts-ignore
     let uuid = $(event.target).attr('uuid');
     let element = vnc.elementCache.get(uuid);
@@ -137,21 +151,21 @@ $(document).on('click', ".expand-child", function (event) {
     //@ts-ignore
     let uuid = $(event.target).attr('uuid');
     let element = vnc.elementCache.get(uuid);
-    if(!element.hasChildren) return;
+    if (!element.hasChildren) return;
 
     let childrenNodes = vnc.elementCache.get(uuid).orgData.children;
-    if(childrenNodes){
+    if (childrenNodes) {
         let content = '';
-        for(let child of childrenNodes) {
+        for (let child of childrenNodes) {
             let bounds = child.getAttribute("bounds").match(/\d+/g);
-            let elementBounds:Bounds = new Bounds(Number(bounds[1]),
-                                                    Number(bounds[0]),
-                                                    Number(bounds[2] - Number(bounds[0])),
-                                                    Number(bounds[3] - Number(bounds[1])));
-            let element:DumpElement = new DumpElement(
+            let elementBounds: Bounds = new Bounds(Number(bounds[1]),
+                Number(bounds[0]),
+                Number(bounds[2] - Number(bounds[0])),
+                Number(bounds[3] - Number(bounds[1])));
+            let element: DumpElement = new DumpElement(
                 child.className,
                 elementBounds,
-                child.childElementCount >0,
+                child.childElementCount > 0,
                 child,
                 child.attributes
             )
@@ -183,7 +197,7 @@ $(document).on('click', ".ui-element", function (event) {
     let pageWidth = $("body").width();
     //@ts-ignore
     let popwindow = $(`
-        <div class="properties-pop-window" style="right:${pageWidth-event.pageX}px; top:${event.pageY}px">
+        <div class="properties-pop-window" style="right:${pageWidth - event.pageX}px; top:${event.pageY}px">
             <div class="close">Close</div>
             <div class="values">
             ${content}
@@ -245,3 +259,13 @@ $(".refresh").click(async () => {
 
     }
 });
+
+//@ts-ignore
+$(".vnc-image").click(event => {
+
+    //@ts-ignore
+    let pointOnDevice = vnc.clickOnVnc(new Point(event.clientX, event.clientY));
+    console.log(pointOnDevice);
+});
+
+$(".refresh").trigger("click");
